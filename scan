@@ -1,0 +1,171 @@
+#!/usr/bin/python
+
+import sane
+#import sys
+import os
+import wx
+from wxPython import xrc
+import sys
+
+#---------------------------------------------------------------------
+#  class Scanner
+#
+#  Defines simple interface to scanner
+#
+class Scanner:
+  def __init__(self):
+    # initialize scanner
+    sane.init()
+    devices = sane.get_devices()
+    if not devices:
+      print "No scanners found!"
+      sys.exit(1)
+
+    self.scanner = sane.open(devices[0][0])
+    
+    # set default scan properties
+    self.scanner.mode = "Color"
+    self.scanner.tl_x = 0
+    self.scanner.tl_y = 0
+    self.scanner.br_x = 215.9
+    self.scanner.br_y = 279.4
+
+    self.changed = True
+    self.resolution = None
+    self.width = None
+    self.height = None
+
+    self.setresolution(300)
+    self.setscandimensions(8.5 * 25.4, 11.0 * 25.4)
+
+  # allow gui to control scan resolution  
+  def setresolution(self, res):
+    if self.resolution != res:
+      self.resolution = res
+      self.scanner.resolution = res
+      self.changed = True
+
+  def setscandimensions(self, width, height):
+    if self.width != width or self.height != height:
+      self.width = width
+      self.height = height
+      self.scanner.br_x = width
+      self.scanner.br_y = height
+      self.changed = True
+
+  # print all available scanner options to stdout
+  def showoptions(self):
+    for option in self.scanner.get_options():
+      print option
+
+  # scan one image
+  def getimage(self):
+    im = self.scanner.scan()
+
+    return im
+
+
+#---------------------------------------------------------------------
+#  filename()
+# 
+#  Given a name prefix, a starting count value and a suffix, a new
+#  filename is created.  If a file corresponding to the current count
+#  exists, the count is advanced until a non-existant name is found.
+#
+def filename(prefix, startcount = 0, suffix = ".jpg"):
+  count = startcount
+  
+  while True:
+    name = prefix + '%04d' % count + suffix
+    try:
+      os.stat(name)
+    except OSError: # file doesn't exist
+      break
+    count += 1
+
+  return name
+
+
+#---------------------------------------------------------------------
+#  Scanform
+#
+#  Defines WX python window for setting scanner properties and file 
+#  name.
+#
+class Scanform:
+  def __init__(self, res):
+    self.frame = res.LoadFrame(None, "frmMain")
+    self.panel = xrc.XRCCTRL(self.frame, 'pnlMain')
+   
+    self.txtName = xrc.XRCCTRL(self.frame, 'txtFilename')
+
+    self.rad1200 = xrc.XRCCTRL(self.frame, 'rad1200dpi')
+    self.rad600 = xrc.XRCCTRL(self.frame, 'rad600dpi')
+    self.rad300 = xrc.XRCCTRL(self.frame, 'rad300dpi')
+    self.rad150 = xrc.XRCCTRL(self.frame, 'rad150dpi')
+
+    self.txtWidth = xrc.XRCCTRL(self.frame, 'txtWidth')
+    self.txtHeight = xrc.XRCCTRL(self.frame, 'txtHeight')
+
+    self.butScan = xrc.XRCCTRL(self.frame, 'butScan')
+
+    wx.EVT_BUTTON(self.frame, self.butScan.GetId(), self.Scan)
+
+    self.count = 0
+    self.scanner = Scanner()
+    self.fileprefix = None
+    
+    self.frame.Show()
+
+  # Scan button click event    
+  def Scan(self, event):
+    # if the filename has changed, reset counter
+    if (self.txtName.GetValue() != self.fileprefix):
+      self.count = 0
+    self.fileprefix = self.txtName.GetValue()
+
+    # set scanner resolution to match radio buttons
+    if self.rad1200.GetValue():
+      self.scanner.setresolution(1200)
+    elif self.rad600.GetValue():
+      self.scanner.setresolution(600)
+    elif self.rad300.GetValue():
+      self.scanner.setresolution(300)
+    else:
+      self.scanner.setresolution(150)
+
+    # set suffix
+    suffix = ".jpg"
+
+    # set scan dimensions
+    width = self.txtWidth.GetValue()
+    try:
+      width = float(width)
+    except:
+      return
+
+    height = self.txtHeight.GetValue()
+    try:
+      height = float(height)
+    except:
+      return
+
+    self.scanner.setscandimensions(width * 25.4, height * 25.4)
+
+    # acquire image
+    image = self.scanner.getimage()
+    fname = filename(self.fileprefix, self.count, suffix)
+    image.save(fname)
+
+    # update count for next scan
+    self.count +=1
+
+def main():
+  # main application loop
+  app = wx.PySimpleApp()
+  res = xrc.wxXmlResource('scanner.xrc')
+  form = Scanform(res)
+  app.MainLoop()
+
+if __name__ == '__main__':
+  main()

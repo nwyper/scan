@@ -1,0 +1,8 @@
+#!/bin/bash
+
+OUT=`date +"%Y-%m-%d_%H%M%S"`
+
+convert -format pdf -units PixelsPerInch -density 150x150 $* $OUT.pdf
+
+for i in $*; do mv $i $i.converted; done
+

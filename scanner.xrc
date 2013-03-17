@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="ascii"?>
+<resource>
+  <object class="wxFrame" name="frmMain">
+    <title>Wyper.ca Scanner Interface</title>
+    <object class="wxPanel" name="pnlMain">
+      <object class="wxBoxSizer">
+        <orient>wxVERTICAL</orient>
+        <object class="sizeritem">
+          <object class="wxBoxSizer">
+            <orient>wxHORIZONTAL</orient>
+            <object class="sizeritem">
+              <object class="wxStaticText">
+                <label>Filename</label>
+              </object>
+              <flag>wxRIGHT|wxALIGN_CENTRE_VERTICAL</flag>
+              <border>5</border>
+            </object>
+            <object class="sizeritem">
+              <object class="wxTextCtrl" name="txtFilename">
+                <value>image</value>
+              </object>
+              <option>2</option>
+              <flag>wxGROW</flag>
+            </object>
+          </object>
+          <flag>wxALL|wxGROW</flag>
+          <border>10</border>
+        </object>
+        <object class="sizeritem">
+          <object class="wxStaticLine"/>
+          <flag>wxGROW</flag>
+        </object>
+        <object class="sizeritem">
+          <object class="wxBoxSizer">
+            <orient>wxHORIZONTAL</orient>
+            <object class="sizeritem">
+              <object class="wxGridSizer">
+                <cols>2</cols>
+                <rows>2</rows>
+                <object class="sizeritem">
+                  <object class="wxStaticText">
+                    <label>Width</label>
+                  </object>
+                  <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxTextCtrl" name="txtWidth">
+                    <value>8.5</value>
+                  </object>
+                  <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxStaticText">
+                    <label>Height</label>
+                  </object>
+                  <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxTextCtrl" name="txtHeight">
+                    <value>11.0</value>
+                  </object>
+                  <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                </object>
+                <vgap>5</vgap>
+              </object>
+              <flag>wxALL|wxGROW</flag>
+            </object>
+            <object class="sizeritem">
+              <object class="wxStaticLine">
+                <style>wxLI_VERTICAL</style>
+              </object>
+              <flag>wxLEFT|wxRIGHT|wxGROW</flag>
+              <border>10</border>
+            </object>
+            <object class="sizeritem">
+              <object class="wxStaticText">
+                <label>Resolution</label>
+              </object>
+            </object>
+            <object class="sizeritem">
+              <object class="wxBoxSizer">
+                <orient>wxVERTICAL</orient>
+                <object class="sizeritem">
+                  <object class="wxRadioButton" name="rad1200dpi">
+                    <label>1200 dpi</label>
+                  </object>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxRadioButton" name="rad600dpi">
+                    <label>600 dpi</label>
+                  </object>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxRadioButton" name="rad300dpi">
+                    <label>300 dpi</label>
+                  </object>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxRadioButton" name="rad150dpi">
+                    <label>150 dpi</label>
+                  </object>
+                </object>
+              </object>
+              <option>1</option>
+              <flag>wxGROW</flag>
+            </object>
+          </object>
+          <flag>wxALL|wxGROW</flag>
+          <border>10</border>
+        </object>
+        <object class="sizeritem">
+          <object class="wxButton" name="butScan">
+            <label>Scan</label>
+          </object>
+          <option>1</option>
+          <flag>wxGROW</flag>
+        </object>
+      </object>
+      <size>400,200</size>
+    </object>
+    <style>wxDEFAULT_DIALOG_STYLE</style>
+  </object>
+</resource>
